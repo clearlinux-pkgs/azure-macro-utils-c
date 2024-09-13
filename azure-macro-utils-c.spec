@@ -7,12 +7,13 @@
 #
 Name     : azure-macro-utils-c
 Version  : bb156d99fc966a3ee6e4155947ade1e32b73c89f
-Release  : 1
+Release  : 2
 URL      : https://github.com/Azure/macro-utils-c/archive/bb156d99fc966a3ee6e4155947ade1e32b73c89f/azure-macro-utils-c-bb156d99fc966a3ee6e4155947ade1e32b73c89f.tar.gz
 Source0  : https://github.com/Azure/macro-utils-c/archive/bb156d99fc966a3ee6e4155947ade1e32b73c89f/azure-macro-utils-c-bb156d99fc966a3ee6e4155947ade1e32b73c89f.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : MIT
+Requires: azure-macro-utils-c-data = %{version}-%{release}
 Requires: azure-macro-utils-c-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
 # Suppress stripping binaries
@@ -25,9 +26,18 @@ This repository contains the following:
 * **a generation tool for macro_utils.h** to regenerate the file macro_utils.h. Pressing F5 after opening .sln file will regenerate macro_utils.h
 * **macro_utils.h** a C header file that contains a multitude of very useful C macros
 
+%package data
+Summary: data components for the azure-macro-utils-c package.
+Group: Data
+
+%description data
+data components for the azure-macro-utils-c package.
+
+
 %package dev
 Summary: dev components for the azure-macro-utils-c package.
 Group: Development
+Requires: azure-macro-utils-c-data = %{version}-%{release}
 Provides: azure-macro-utils-c-devel = %{version}-%{release}
 Requires: azure-macro-utils-c = %{version}-%{release}
 
@@ -52,7 +62,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1726261751
+export SOURCE_DATE_EPOCH=1726265831
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -89,7 +99,7 @@ FFLAGS="$CLEAR_INTERMEDIATE_FFLAGS"
 FCFLAGS="$CLEAR_INTERMEDIATE_FCFLAGS"
 ASFLAGS="$CLEAR_INTERMEDIATE_ASFLAGS"
 LDFLAGS="$CLEAR_INTERMEDIATE_LDFLAGS"
-export SOURCE_DATE_EPOCH=1726261751
+export SOURCE_DATE_EPOCH=1726265831
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/azure-macro-utils-c
 cp %{_builddir}/macro-utils-c-%{version}/LICENSE %{buildroot}/usr/share/package-licenses/azure-macro-utils-c/47e4690f60befa1918e5ac38723973fe4cf04e9b || :
@@ -98,12 +108,18 @@ GOAMD64=v2
 pushd clr-build
 %make_install
 popd
+## install_append content
+# Move cmake files to a useful path
+mkdir -p %{buildroot}/usr/share/cmake/%{name}
+mv %{buildroot}/usr/cmake/*.cmake %{buildroot}/usr/share/cmake/%{name}
+## install_append end
 
 %files
 %defattr(-,root,root,-)
-/usr/cmake/macro_utils_cConfig.cmake
-/usr/cmake/macro_utils_cConfigVersion.cmake
-/usr/cmake/macro_utils_cTargets.cmake
+
+%files data
+%defattr(-,root,root,-)
+/usr/share/cmake/*
 
 %files dev
 %defattr(-,root,root,-)

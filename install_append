@@ -1,0 +1,3 @@
+# Move cmake files to a useful path
+mkdir -p %{buildroot}/usr/share/cmake/%{name}
+mv %{buildroot}/usr/cmake/*.cmake %{buildroot}/usr/share/cmake/%{name}
